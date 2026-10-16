@@ -39,14 +39,10 @@ void IRAM_ATTR onTimer() {
     if (relayOn && elapsedSeconds >= ON_TIME) {
         relayOn = false;
         elapsedSeconds = 0;
-
-        digitalWrite(RELAY_PIN, RELAY_OFF);
     }
     else if (!relayOn && elapsedSeconds >= OFF_TIME) {
         relayOn = true;
         elapsedSeconds = 0;
-
-        digitalWrite(RELAY_PIN, RELAY_ON);
     }
 }
 
@@ -103,7 +99,7 @@ void setup() {
 }
 
 // ==========================================
-// Main loop - logging only
+// Main loop - relay control and logging outside the interrupt
 // ==========================================
 
 void loop() {
@@ -113,6 +109,8 @@ void loop() {
 
     if (currentState != previousState) {
         previousState = currentState;
+
+        digitalWrite(RELAY_PIN, currentState ? RELAY_ON : RELAY_OFF);
 
         Serial.println(
             currentState ? "Relay ON" : "Relay OFF"
